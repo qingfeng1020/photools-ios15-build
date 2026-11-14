@@ -19,6 +19,8 @@ jobs:
         run: brew install xcodegen
       - name: Normalize shell script
         run: python3 -c "from pathlib import Path; p=Path('apps/ios/PhotoolsMobile/tools/build-ios15-ipa.sh'); p.write_bytes(p.read_bytes().replace(bytes([13,10]), bytes([10])))"
+      - name: Fix platform navigation style
+        run: python3 -c "from pathlib import Path; p=Path('apps/ios/PhotoolsMobile/Sources/PhotoolsMobileCore/Views/CompatibleNavigationView.swift'); p.write_text(p.read_text().replace('.navigationViewStyle(.stack)', ''))"
       - name: Test and build IPA
         run: bash apps/ios/PhotoolsMobile/tools/build-ios15-ipa.sh
       - name: Upload IPA
