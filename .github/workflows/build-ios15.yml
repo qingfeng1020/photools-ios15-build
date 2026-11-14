@@ -1,0 +1,28 @@
+name: Build iOS 15 IPA
+on:
+  push:
+    paths:
+      - ".github/workflows/build-ios15.yml"
+      - "PhotoolsMobile-iOS15-cloud-build.zip"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract modified source
+        run: unzip -o PhotoolsMobile-iOS15-cloud-build.zip
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Test and build IPA
+        run: bash apps/ios/PhotoolsMobile/tools/build-ios15-ipa.sh
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhotoolsMobile-iOS15-arm64
+          path: apps/ios/PhotoolsMobile/dist/*.ipa
+          if-no-files-found: error
+          retention-days: 7
